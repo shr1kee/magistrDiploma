@@ -1652,6 +1652,9 @@
       <change beforePath="$PROJECT_DIR$/../target/classes/ru/nalimov/controller/HelloController.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../target/classes/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/../target/classes/templates/main.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../target/diploma-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/../target/diploma-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../target/diploma-1.0-SNAPSHOT/WEB-INF/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../target/diploma-1.0-SNAPSHOT/WEB-INF/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -1763,7 +1766,7 @@
       <workItem from="1585041667415" duration="5226000" />
       <workItem from="1585591572394" duration="5208000" />
       <workItem from="1585850000654" duration="647000" />
-      <workItem from="1586174866914" duration="3150000" />
+      <workItem from="1586174866914" duration="3753000" />
     </task>
     <servers />
   </component>
