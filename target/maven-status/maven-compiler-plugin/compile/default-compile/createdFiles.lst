@@ -1,1 +1,7 @@
-ru\nalimov\controller\HelloController.class
+ru\nalimov\SpringStartApplication.class
+ru\nalimov\service\KafkaService.class
+ru\nalimov\controller\WebSocketController.class
+ru\nalimov\WebSocketConfig.class
+ru\nalimov\AddResourceHandler.class
+ru\nalimov\SpringWebAppInitializer.class
+ru\nalimov\controller\PageController.class
