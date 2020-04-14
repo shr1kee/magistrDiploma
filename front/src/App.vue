@@ -2,43 +2,34 @@
     <div id="app">
         <div class="row">
             <div class="tabs col-sm-2">
-                <a v-for="(tab, index) in tabs"
-                   class="tab yellow"
+                <a v-for="(tab) in tabs"
+                   class="tab clickableElement"
                    :class="activeTab.title === tab.title ? 'active' : ''"
-                   v-on:click="activeTab=tabs[index]"
+                   v-on:click="changeTab(tab)"
                    :key="tab.title"
                 >
                     {{tab.title}}
                 </a>
-                <a>
-                    {{received_messages[received_messages.length-1]}}
-                </a>
             </div>
-            <div class="content col-sm-10">
-                <!--        <a class="tab"-->
-                <!--           v-for="(type, index) in activeTab.types"-->
-                <!--           :key="type.title"-->
-                <!--           :class="activeType.title === type.title ? 'active' : ''"-->
-                <!--           v-on:click="activeType=activeTab.types[index]"-->
-                <!--        >-->
-                <!--          {{type.title}}-->
-                <!--        </a>-->
-                <div class="tile" v-on:click="send()">
-                    <font-awesome-icon icon="lightbulb">
+            <div class="content col-sm-6">
+                <div v-for="(type) in activeTab.types"
+                     :key="type.title"
+                     class="tile clickableElement"
+                     :class="activeType.title === type.title ? 'active' : ''"
+                     v-on:click="showInfo(type)"
+                >
+                    <font-awesome-icon :icon="getIcon(type.title)">
                     </font-awesome-icon>
-                    light
+                    {{type.title}}
+                    {{type.value}}
                 </div>
-                <div class="tile">
-                    <font-awesome-icon icon="tint">
-                    </font-awesome-icon>
-                    water
-                </div>
-                <div class="tile">
-                    <font-awesome-icon icon="temperature-high">
-                    </font-awesome-icon>
-                    temperature
-                </div>
-
+            </div>
+            <div class="tile clickableElement active col-sm-4" style="height: 100px">
+                title: {{activeType.title}}
+                <input type="number" v-model="activeType.value"/>
+                <br/>
+                <font-awesome-icon :icon="getIcon(activeType.title)">
+                </font-awesome-icon>
             </div>
         </div>
     </div>
@@ -53,28 +44,37 @@
         components: {},
         data() {
             let tabs = [
-                {
-                    title: 'first',
-                    types: [
-                        {
-                            title: 'light'
-                        },
-                        {
-                            title: 'water'
-                        }
-                    ]
-                },
-                {
-                    title: 'second',
-                    types: [
-                        {
-                            title: 'light'
-                        }
-                    ]
-                }
+                // {
+                //     title: 'first',
+                //     types: [
+                //         {
+                //             title: 'light',
+                //             value: 45
+                //         },
+                //         {
+                //             title: 'water',
+                //             value: 86
+                //         },
+                //         {
+                //             title: 'temperature',
+                //             value: 100
+                //         }
+                //     ]
+                // },
+                // {
+                //     title: 'second',
+                //     types: [
+                //         {
+                //             title: 'light',
+                //             value: 11
+                //         }
+                //     ]
+                // }
             ]
-            let activeTab = tabs[0]
-            let activeType = activeTab.types[0]
+            // let activeTab = tabs[0]
+            let activeTab = {}
+            // let activeType = activeTab.types[0]
+            let activeType = ''
             return {
                 tabs: tabs,
                 activeTab: activeTab,
@@ -84,6 +84,20 @@
             }
         },
         methods: {
+            changeTab(tab) {
+                this.activeTab=tab
+                this.activeType=tab.types[0]
+            },
+            getIcon(title) {
+                switch (title) {
+                    case 'light':
+                        return 'lightbulb'
+                    case 'water':
+                        return 'tint'
+                    case 'temperature':
+                        return 'temperature-high'
+                }
+            },
             connect() {
                 this.socket = new SockJS('http://localhost:8081/data')
                 this.stompClient = Stomp.over(this.socket)
@@ -97,13 +111,19 @@
                             console.log('tick:')
                             console.log(tick)
                             this.received_messages.push(tick.body)
+                            this.tabs = JSON.parse(tick.body)
+                            this.activeTab = this.tabs[0]
+                            this.activeType = this.activeTab.types[0]
                         })
+                        this.send()
                     }
                 )
-
             },
             send() {
                 this.stompClient.send('/app/topicTo', 'hi from page', {})
+            },
+            showInfo(type) {
+                this.activeType = type
             }
         },
         mounted() {
@@ -120,12 +140,16 @@
         background-color: #2B2B2B;
     }
 
+    input {
+        background-color: #ffef2a;
+        border-radius: 10px;
+        width: 50px;
+    }
     .tile {
         cursor: pointer;
         padding: 12px 24px;
         border: 2px solid #ccc;
         border-radius: 10px;
-        background-color: #ffef2a;
         display: inline;
     }
 
@@ -136,30 +160,31 @@
         flex-direction: column;
     }
 
-    .tab {
-        flex-direction: column;
-        cursor: pointer;
-        padding: 12px 24px;
-        transition: background-color 0.2s;
-        border: 1px solid #ccc;
-        border-bottom: none;
+    .clickableElement {
         background-color: #dfd05d;
-        font-weight: bold;
+        border: 1px solid #ccc;
     }
 
-    /* Change background color of tabs on hover */
-    .tab:hover {
+    .clickableElement:hover {
         background-color: #efdf49;
         color: #fff;
     }
-
-    /* Styling for active tab */
-    .tab.active {
+    .clickableElement.active {
         background-color: #ffef2a;
         color: #484848;
         border-bottom: 2px solid #fff;
         cursor: default;
     }
+    .tab {
+        flex-direction: column;
+        cursor: pointer;
+        padding: 12px 24px;
+        transition: background-color 0.2s;
+        border-bottom: none;
+        font-weight: bold;
+    }
+
+    /* Styling for active tab */
 
 
 </style>
