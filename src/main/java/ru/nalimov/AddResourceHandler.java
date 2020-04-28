@@ -13,9 +13,10 @@ public class AddResourceHandler implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/front/**")
-                .addResourceLocations("file:///D:/project/diploma/front/");
+                .addResourceLocations("file:////Users/a17032258/Downloads/magistrDiploma/front/dist");
     }
 
+    //
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
