@@ -13,7 +13,7 @@ public class KafkaService {
     @Autowired
     private SimpMessagingTemplate template;
 
-    @KafkaListener(topics = "${data.topic.in}")
+   // @KafkaListener(topics = "${data.topic.in}")
     public void listen(String in) {
         log.info("receive {}", in);
         template.convertAndSend("/topicFrom", in);

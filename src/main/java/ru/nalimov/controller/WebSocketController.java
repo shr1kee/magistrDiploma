@@ -6,17 +6,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import ru.nalimov.model.Entity;
+import ru.nalimov.service.ModBusService;
 
 @Controller
 public class WebSocketController {
+
 
     private static int count = 0;
 
     @Autowired
     ObjectMapper mapper;
+
+    @Autowired
+    ModBusService modBusService;
 
     @MessageMapping(value = "/topicTo")
     @SendTo("/topicFrom")
@@ -29,6 +36,17 @@ public class WebSocketController {
         result.add(tab1);
         result.add(tab2);
         return (mapper.writeValueAsString(result));
+    }
+
+    @MessageMapping(value = "/sendValue")
+    @SendTo("/changeValue")
+    public ResponseEntity sendValue(Entity get) {
+        modBusService.connect();
+        System.out.println("registr");
+        System.out.println(get.getRegistr());
+        System.out.println("value");
+        System.out.println(get.getValue());
+        return ResponseEntity.ok().build();
     }
 
 

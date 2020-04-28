@@ -24,7 +24,7 @@
                     {{type.value}}
                 </div>
             </div>
-            <div class="tile clickableElement active col-sm-4" style="height: 100px">
+            <div v-on:click="changeValue(activeType.registr, activeType.value)" class="tile clickableElement active col-sm-4" style="height: 100px">
                 title: {{activeType.title}}
                 <input type="number" v-model="activeType.value"/>
                 <br/>
@@ -44,37 +44,39 @@
         components: {},
         data() {
             let tabs = [
-                // {
-                //     title: 'first',
-                //     types: [
-                //         {
-                //             title: 'light',
-                //             value: 45
-                //         },
-                //         {
-                //             title: 'water',
-                //             value: 86
-                //         },
-                //         {
-                //             title: 'temperature',
-                //             value: 100
-                //         }
-                //     ]
-                // },
-                // {
-                //     title: 'second',
-                //     types: [
-                //         {
-                //             title: 'light',
-                //             value: 11
-                //         }
-                //     ]
-                // }
+                {
+                    title: 'Кухня',
+                    types: [
+                        {
+                            title: 'light',
+                            registr: 11,
+                            value: 45
+                        },
+                        {
+                            title: 'water',
+                            registr: 50,
+                            value: 86
+                        },
+                        {
+                            title: 'temperature',
+                            registr: 24,
+                            value: 100
+                        }
+                    ]
+                },
+                {
+                    title: 'Гостиная',
+                    types: [
+                        {
+                            title: 'light',
+                            reginstr: 50,
+                            value: 11
+                        }
+                    ]
+                }
             ]
-            // let activeTab = tabs[0]
-            let activeTab = {}
-            // let activeType = activeTab.types[0]
-            let activeType = ''
+             let activeTab = tabs[0]
+             let activeType = activeTab.types[0]
             return {
                 tabs: tabs,
                 activeTab: activeTab,
@@ -110,17 +112,21 @@
                         this.stompClient.subscribe('/topicFrom', tick => {
                             console.log('tick:')
                             console.log(tick)
-                            this.received_messages.push(tick.body)
-                            this.tabs = JSON.parse(tick.body)
-                            this.activeTab = this.tabs[0]
-                            this.activeType = this.activeTab.types[0]
                         })
-                        this.send()
+                        this.stompClient.subscribe('/changeValue', tick => {
+                            this.analyzeResponse(tick)
+                        })
                     }
                 )
             },
             send() {
                 this.stompClient.send('/app/topicTo', 'hi from page', {})
+            },
+            changeValue(registr, value) {
+                this.stompClient.send('/app/sendValue',  JSON.stringify({registr:registr, value:value}), {})
+            },
+            analyzeResponse(tick) {
+                console.log(tick)
             },
             showInfo(type) {
                 this.activeType = type
