@@ -13,7 +13,7 @@ public class AddResourceHandler implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/front/**")
-                .addResourceLocations("file:////Users/a17032258/Downloads/magistrDiploma/front/dist");
+                .addResourceLocations("file:////Users/a17032258/Downloads/magistrDiploma/front/priv/front/");
     }
 
     //

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <property name="LOG_HOME" value="logs"/>
+
+    <appender name="runtime" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/runtime.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/runtime.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>50MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%-6level [%d{yyyy-MM-dd HH:mm:ss.SSS}] %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="terminal" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%-6level [%d{yyyy-MM-dd HH:mm:ss.SSS}] %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="ru.sbt.divr.designer" level="debug"/>
+    <logger name="org.flywaydb.core.internal.command.DbMigrate" level="info"/>
+
+    <root level="info">
+        <appender-ref ref="terminal"/>
+        <appender-ref ref="runtime"/>
+    </root>
+</configuration>

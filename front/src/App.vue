@@ -1,7 +1,8 @@
+/* eslint-disable */
 <template>
     <div id="app">
         <div class="row">
-            <div class="tabs col-sm-2">
+            <div class="tabs col-sm-1">
                 <a v-for="(tab) in tabs"
                    class="tab clickableElement"
                    :class="activeTab.title === tab.title ? 'active' : ''"
@@ -11,7 +12,24 @@
                     {{tab.title}}
                 </a>
             </div>
-            <div class="content col-sm-6">
+            <div class="col-sm-2 tile clickableElement">
+                <div style="position: relative; font-size: 2rem">
+                    <p>
+                        Состояние
+                    </p>
+                    <p>
+                        <font-awesome-icon :icon="getIcon('temperature')">
+                        </font-awesome-icon>
+                        &nbsp;{{activeTab.state.temperature}}℃
+                    </p>
+                    <p>
+                        <font-awesome-icon :icon="getIcon('water')">
+                        </font-awesome-icon>
+                        &nbsp;{{activeTab.state.humidity}}%
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-7 parent">
                 <div v-for="(type) in activeTab.types"
                      :key="type.title"
                      class="tile clickableElement"
@@ -20,16 +38,82 @@
                 >
                     <font-awesome-icon :icon="getIcon(type.title)">
                     </font-awesome-icon>
-                    {{type.title}}
-                    {{type.value}}
+                    {{getRusTitle(type.title)}}
+                    <div v-if="type.title=='light'">
+                        <VueSlideBar
+                                v-model="type.value"
+                                :data="[0, 10, 20, 30, 40]"
+                                :range="[{label: 0},{label: 10}, {label: 20}, {label: 30}, {label: 40}]"
+                                :processStyle="{ backgroundColor: '#d8d8d8'}"
+                                @input="changeValue(type.registr, type.value)">
+                            <template slot="tooltip" slot-scope="tooltip">
+                                <img src="./statics/rectangle-slider.svg">
+                            </template>
+                        </VueSlideBar>
+                    </div>
+                    <div v-else-if="type.title=='temperature'">
+                        <VueSlideBar
+                                v-model="type.value"
+                                :data="[0, 10, 20, 30, 40, 50, 60, 70]"
+                                :range="[{label: 0},{label: 10}, {label: 20}, {label: 30}, {label: 40},  {label: 50},  {label: 60}]"
+                                :processStyle="{ backgroundColor: '#d8d8d8'}"
+                                @input="changeValue(type.registr, type.value)">
+                            <template slot="tooltip" slot-scope="tooltip">
+                                <img src="./statics/rectangle-slider.svg">
+                            </template>
+                        </VueSlideBar>
+
+                    </div>
+                    <div v-else-if="type.title=='floor'">
+                        <VueSlideBar
+                                v-model="type.value"
+                                :data="[0, 10, 20, 30, 40, 50, 60, 70]"
+                                :range="[{label: 0},{label: 10}, {label: 20}, {label: 30}, {label: 40},  {label: 50},  {label: 60}]"
+                                :processStyle="{ backgroundColor: '#d8d8d8'}"
+                                @input="changeValue(type.registr, type.value)">
+                            <template slot="tooltip" slot-scope="tooltip">
+                                <img src="./statics/rectangle-slider.svg">
+                            </template>
+                        </VueSlideBar>
+                    </div>
+                    <div v-else-if="type.title=='movement'">
+                        <RockerSwitch :value="type.value"  size="medium" @change="changeToggle"/>
+                        <p>Когда изменить состояние</p>
+                        <DateTime v-model="type.datetime" type="datetime"></DateTime>
+                    </div>
+
+                    <div v-else>
+
+                    </div>
                 </div>
             </div>
-            <div v-on:click="changeValue(activeType.registr, activeType.value)" class="tile clickableElement active col-sm-4" style="height: 100px">
-                title: {{activeType.title}}
-                <input type="number" v-model="activeType.value"/>
-                <br/>
-                <font-awesome-icon :icon="getIcon(activeType.title)">
-                </font-awesome-icon>
+            <div class="col-sm-2 outside">
+                <div class="parent tile clickableElement">
+                    <div style="position: relative; flex: 0 0 0.33">
+                        <p>
+                            Погода снаружи
+                        </p>
+                        <p>
+                            <font-awesome-icon :icon="getIcon('temperature')">
+                            </font-awesome-icon>
+                            &nbsp;{{outside.temperature}}℃
+                        </p>
+                        <p>
+                            <font-awesome-icon :icon="getIcon('water')">
+                            </font-awesome-icon>
+                            &nbsp;{{outside.humidity}}%
+                        </p>
+                        <p>
+                            <font-awesome-icon :icon="getIcon('wind')">
+                            </font-awesome-icon>
+                            &nbsp;{{outside.wind}}км/ч
+                        <p/>
+                    </div>
+                    <div style="position:relative; font-size: 4rem; display:flex; align-items: center">
+                        <font-awesome-icon :icon="getIcon('outside')">
+                        </font-awesome-icon>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -43,22 +127,46 @@
         name: 'App',
         components: {},
         data() {
+            let outside = {
+                temperature: 24,
+                humidity: 34,
+                wind: 3
+
+            }
             let tabs = [
                 {
                     title: 'Кухня',
+                    state: {
+                        temperature: 25,
+                        humidity: 25
+                    },
                     types: [
                         {
+                            rusTitle: 'Свет',
                             title: 'light',
                             registr: 11,
                             value: 45
                         },
                         {
-                            title: 'water',
-                            registr: 50,
-                            value: 86
+                            rusTitle: 'Датчик движения',
+                            title: 'movement',
+                            registr: 121,
+                            value: true,
+                            datetime: ''
+                        },
+                        // {
+                        //     title: 'water',
+                        //     registr: 50,
+                        //     value: 86
+                        // },
+                        {
+                            rusTitle: 'Температура',
+                            title: 'temperature',
+                            registr: 24,
+                            value: 100
                         },
                         {
-                            title: 'temperature',
+                            title: 'floor',
                             registr: 24,
                             value: 100
                         }
@@ -66,6 +174,10 @@
                 },
                 {
                     title: 'Гостиная',
+                    state: {
+                        temperature: 20,
+                        humidity: 20
+                    },
                     types: [
                         {
                             title: 'light',
@@ -78,6 +190,8 @@
              let activeTab = tabs[0]
              let activeType = activeTab.types[0]
             return {
+                outside: outside,
+                changed: false,
                 tabs: tabs,
                 activeTab: activeTab,
                 activeType: activeType,
@@ -86,9 +200,37 @@
             }
         },
         methods: {
+            changeToggle(val) {
+                this.activeType.value = val
+            },
             changeTab(tab) {
                 this.activeTab=tab
                 this.activeType=tab.types[0]
+                this.$nextTick(() => {
+                    this.$children.forEach(ch => {
+                        if (ch.refresh) {
+                            ch.refresh()
+                        }
+                    })
+                });
+            },
+            getRusTitle(title) {
+                switch(title) {
+                    case 'light':
+                        return 'Свет'
+                    case 'water':
+                        return 'Вода'
+                    case 'temperature':
+                        return 'Температура'
+                    case 'floor':
+                        return 'Теплый пол'
+                    case 'outside':
+                        return 'Улица'
+                    case 'wind':
+                        return 'Ветер'
+                    case 'movement':
+                        return 'Датчик движения'
+                }
             },
             getIcon(title) {
                 switch (title) {
@@ -98,6 +240,14 @@
                         return 'tint'
                     case 'temperature':
                         return 'temperature-high'
+                    case 'floor':
+                        return 'border-all'
+                    case 'outside':
+                        return 'cloud-sun'
+                    case 'wind':
+                        return 'wind'
+                    case 'movement':
+                        return 'male'
                 }
             },
             connect() {
@@ -109,21 +259,32 @@
                         this.connected = true
                         console.log('frame:')
                         console.log(frame)
-                        this.stompClient.subscribe('/topicFrom', tick => {
-                            console.log('tick:')
-                            console.log(tick)
+                        this.stompClient.subscribe('/startAnswer', tick => {
+                            this.initialize(tick)
+                            this.changed = 1
                         })
                         this.stompClient.subscribe('/changeValue', tick => {
                             this.analyzeResponse(tick)
                         })
+                        this.stompClient.send('/app/startInitialize', JSON.stringify({}), {})
                     }
                 )
             },
-            send() {
-                this.stompClient.send('/app/topicTo', 'hi from page', {})
-            },
             changeValue(registr, value) {
-                this.stompClient.send('/app/sendValue',  JSON.stringify({registr:registr, value:value}), {})
+                if (this.changed) {
+                    this.stompClient.send('/app/sendValue',  JSON.stringify({registr:registr, value:value}), {})
+                }
+            },
+            initialize(tick) {
+                let data = JSON.parse(tick.body)
+                let index = 0
+                for (let i in this.tabs) {
+                    let tab = this.tabs[i]
+                    for (let j in tab.types) {
+                        let type = tab.types[j]
+                        type.value = data[index++]
+                    }
+                }
             },
             analyzeResponse(tick) {
                 console.log(tick)
@@ -134,11 +295,15 @@
         },
         mounted() {
             this.connect()
-        }
+        },
     }
 </script>
 
 <style>
+    html, body, #app {
+        height: 100%;
+    }
+
     #app {
         font-family: Avenir, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -149,14 +314,13 @@
     input {
         background-color: #ffef2a;
         border-radius: 10px;
-        width: 50px;
     }
     .tile {
         cursor: pointer;
         padding: 12px 24px;
         border: 2px solid #ccc;
         border-radius: 10px;
-        display: inline;
+        flex: 1 1 0px;
     }
 
     .tabs {
@@ -189,7 +353,10 @@
         border-bottom: none;
         font-weight: bold;
     }
-
+    .parent {
+        display: flex;
+        flex-direction: row;
+    }
     /* Styling for active tab */
 
 
