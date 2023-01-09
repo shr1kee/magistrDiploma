@@ -16,7 +16,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "core-js": "^3.6.4",
     "glyphicons": "latest",
-    "luxon": "1.24.1",
+    "luxon": "2.5.2",
     "sockjs-client": "^1.4.0",
     "style-loader": "^0.23.1",
     "vue": "^2.6.11",
